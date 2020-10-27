@@ -35,7 +35,8 @@ class SandboxSnd(gym.Env):
         self.reward_range = (0, MAX_ACCOUNT_BALANCE)
 
         # Actions of the format Buy x%, Sell x%, Hold, etc.
-        self.action_space = self.action_space = spaces.Discrete(2)#################
+        self.action_space = self.action_space = spaces.Discrete(2) # купить продать
+        # или  self.action_space = spaces.Box(low = np.array([0, 0]), high = np.array([3, 1]), dtype=np.float16) для случая действие + количество
         
         # Prices contains the OHCL values for the last five prices
         self.observation_space = spaces.Box(
@@ -92,10 +93,14 @@ class SandboxSnd(gym.Env):
         # Set the current price to a random price within the time step
         current_price = 1/random.uniform(self.df.loc[self.current_step,"open"],
                                          self.df.loc[self.current_step, "close"])
-        action_type = action
-        #amount = action[1]
+        action_type = action # когда просто купить или продать 10 контрактов
+        # action_type = action[0] когда действие плюс кол-во
+        # amount = action[1]
+        
         total_possible = int(self.balance / current_price)
         shares_val = 10 #int(total_possible * amount)
+        # фиксированно заключаем транзаакцию на 10 контрактов
+        # все что ниже нужно для модели где число контрактов является action
         if action_type < 1:
             # Buy amount % of balance in shares
             prev_cost = self.cost_basis * self.shares_held

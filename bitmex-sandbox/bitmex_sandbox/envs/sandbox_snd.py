@@ -136,7 +136,8 @@ class SandboxSnd(gym.Env):
         delay_modifier = (self.current_step / MAX_STEPS)
 
         reward = self.net_worth * delay_modifier
-        done = self.net_worth <= 0
+        done = self.net_worth <= 0 
+        
 
         obs = self._next_observation()
 

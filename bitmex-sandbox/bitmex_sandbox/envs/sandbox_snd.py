@@ -129,13 +129,11 @@ class SandboxSnd(gym.Env):
         self._take_action(action)
 
         self.current_step += 1
-
+        self.val_step += 1
         if self.current_step > MAX_STEPS-OBSERV_WIN-1:
             self.current_step = 0
-
-        delay_modifier = (self.current_step - self.start_step)
-
-        reward = self.net_worth / delay_modifier
+            
+        reward = self.net_worth / self.val_step
         done = self.net_worth <= 0 
         
 
@@ -154,7 +152,7 @@ class SandboxSnd(gym.Env):
         self.total_sales_value = 0
         # Set the current step to a random point within the data frame
         self.current_step = random.randint(0, MAX_STEPS-OBSERV_WIN-1)
-        self.start_step = self.current_step
+        self.val_step = 0
         return self._next_observation()
 #################
     def render(self, mode='human', close=False):
